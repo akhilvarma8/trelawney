@@ -1,36 +1,33 @@
 import requests
+import parameters
 import json
 import os.path
 from datetime import datetime
 
-defaultURL = 'https://api.mfapi.in/mf/'
-path = "/Users/akhilvarma/Documents/Development/Mutual Funds/Fund Data/" + str(datetime.today().strftime('%Y-%m-%d'))
-if not os.path.exists(path):
-    os.makedirs(path)
+parameters.update_latest_data_folder(str(datetime.today().strftime('%Y-%m-%d')) + '/')
+schemes_file_path = parameters.ABSOLUTE_PATH + parameters.LATEST_DATA_FOLDER
+if not os.path.exists(parameters.SCHEME_DATA_PATH):
+    os.makedirs(parameters.SCHEME_DATA_PATH)
 schemes = []
 
-scheme = 100000
-while scheme <= 200000:
-    nameOfFile = str(scheme)
-    url = defaultURL+nameOfFile
 
-    response = requests.get(url=url)
-    data = response.json()
-    if response.status_code == 200 and len(data["data"]) != 0:
-        schemes.append({scheme: data["meta"]})
-        with open(os.path.join(path, nameOfFile + ".json"), 'w') as fund_data:
-            json.dump(data, fund_data)
-        fund_data.close()
+def get_fund_data():
+    scheme = 100000
+    while scheme <= 200000:
+        name_of_file = str(scheme)
+        url = parameters.API_URL + name_of_file
 
-    scheme += 1
+        response = requests.get(url=url)
+        data = response.json()
+        if response.status_code == 200 and len(data["data"]) != 0:
+            schemes.append({scheme: data["meta"]})
+            with open(os.path.join(parameters.SCHEME_DATA_PATH, name_of_file + ".json"), 'w') as fund_data:
+                json.dump(data, fund_data)
+            fund_data.close()
 
-print(len(schemes))
-with open(os.path.join(path, "schemes.json"), 'w') as json_file:
-    json.dump(schemes, json_file)
-json_file.close()
+        scheme += 1
 
-
-
-
-
-
+    print("Total Schemes", len(schemes))
+    with open(os.path.join(schemes_file_path, "schemes.json"), 'w') as json_file:
+        json.dump(schemes, json_file)
+    json_file.close()

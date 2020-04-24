@@ -1,2 +1,2 @@
-# trelawney
+# Trelawney
 Mutual Fund Analysis
