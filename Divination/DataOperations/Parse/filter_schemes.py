@@ -1,6 +1,6 @@
 import json
 import os
-import parameters
+from Divination import parameters
 
 data_path = parameters.SCHEME_DATA_PATH
 schemes_file_path = parameters.ABSOLUTE_PATH + parameters.LATEST_DATA_FOLDER

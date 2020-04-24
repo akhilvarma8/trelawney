@@ -1,5 +1,5 @@
 import requests
-import parameters
+from Divination import parameters
 import json
 import os.path
 from datetime import datetime

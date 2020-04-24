@@ -1,6 +1,6 @@
 from concurrent.futures import as_completed
 from requests_futures.sessions import FuturesSession
-import parameters
+from Divination import parameters
 import json
 import os.path
 from datetime import datetime

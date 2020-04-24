@@ -1,7 +1,6 @@
 import json
 import os
-
-from AnalyseData.cagr_calculator import cagr
+from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr
 
 analysis_path = "/Users/akhilvarma/Documents/Development/Mutual Funds/Fund Data/2020-04-23/Analysis/"
 data_path = "/Users/akhilvarma/Documents/Development/Mutual Funds/Fund Data/2020-04-23/"
