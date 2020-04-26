@@ -4,7 +4,7 @@ API_URL = 'https://api.mfapi.in/mf/'
 # Parameters for storing and accessing fetched data
 ABSOLUTE_PATH = '/Users/akhilvarma/Documents/Development/Mutual Fund Data/'
 LATEST_DATA_FOLDER = '2020-04-23/'
-SCHEME_DATA_PATH = ABSOLUTE_PATH + LATEST_DATA_FOLDER + "Data"
+SCHEME_DATA_PATH = ABSOLUTE_PATH + LATEST_DATA_FOLDER + "Data/"
 
 # Parameters for organising data
 EQUITY_KEY_WORDS = {'in': ["Equity", "Index"], 'out': ['ELSS']}
