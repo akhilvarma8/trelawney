@@ -1,6 +1,7 @@
 import json
 import os
 import csv
+from statistics import mean
 from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr
 from Divination.DataOperations.Parse.filter_schemes import FilterSchemes
 from Divination import parameters
@@ -12,11 +13,11 @@ class CAGRPerformance:
         if not os.path.exists(parameters.ANALYSIS_PATH):
             os.makedirs(parameters.ANALYSIS_PATH)
         self.cagr_for_schemes = {}
+        self.cagrs = []
         self.analysis_file_name = parameters.ANALYSIS_DATE + ":" + str(parameters.ANALYSIS_DAYS) + "Days" + ".csv"
         self.fund_type = fund_type
 
     def cagr_for_funds_of_type(self):
-        print(self.analysis_file_name)
         fund_type_lower = self.fund_type.lower()
         if fund_type_lower == 'equity':
             fund_key_words = parameters.EQUITY_KEY_WORDS
@@ -40,6 +41,7 @@ class CAGRPerformance:
                 growth_rate = cagr(start, end)
 
                 self.cagr_for_schemes[scheme['scheme_name']] = growth_rate
+                self.cagrs.append(growth_rate)
             scheme_file.close()
 
         self.write_funds_performance_to_file()
@@ -47,17 +49,17 @@ class CAGRPerformance:
     def write_funds_performance_to_file(self):
         sorted_funds = sorted(self.cagr_for_schemes.items(), key=lambda x: x[1], reverse=True)
         print(len(sorted_funds))
+        funds_mean = mean(self.cagrs)
 
         with open(os.path.join(parameters.ANALYSIS_PATH, self.analysis_file_name), 'w', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow(["Fund Name", "CAGR"])
-            writer.writerows(sorted_funds)
+            writer.writerow(["Fund Name", "CAGR", "Performance above Average"])
+            for fund in sorted_funds:
+                fund = fund + tuple([round(fund[1] - funds_mean, 2)])
+                writer.writerow(fund)
 
 
 def main():
-    CAGRPerformance("Hybrid").cagr_for_funds_of_type()
-    CAGRPerformance("Equity").cagr_for_funds_of_type()
-    CAGRPerformance("Debt").cagr_for_funds_of_type()
     CAGRPerformance("ELSS").cagr_for_funds_of_type()
 
 
