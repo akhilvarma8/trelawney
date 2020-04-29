@@ -6,8 +6,8 @@ from datetime import datetime
 
 parameters.update_latest_data_folder(str(datetime.today().strftime('%Y-%m-%d')) + '/')
 schemes_file_path = parameters.ABSOLUTE_PATH + parameters.LATEST_DATA_FOLDER
-if not os.path.exists(parameters.SCHEME_DATA_PATH):
-    os.makedirs(parameters.SCHEME_DATA_PATH)
+if not os.path.exists(parameters.RAW_DATA_PATH):
+    os.makedirs(parameters.RAW_DATA_PATH)
 schemes = []
 
 
@@ -21,7 +21,7 @@ def get_fund_data():
         data = response.json()
         if response.status_code == 200 and len(data["data"]) != 0:
             schemes.append({scheme: data["meta"]})
-            with open(os.path.join(parameters.SCHEME_DATA_PATH, name_of_file + ".json"), 'w') as fund_data:
+            with open(os.path.join(parameters.RAW_DATA_PATH, name_of_file + ".json"), 'w') as fund_data:
                 json.dump(data, fund_data)
             fund_data.close()
 

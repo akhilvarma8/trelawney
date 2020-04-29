@@ -3,8 +3,12 @@ import os
 import csv
 from statistics import mean
 from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr
+from Divination.DataOperations.AnalysisHelpers.helper_functions import fund_type_to_key_words
 from Divination.DataOperations.Parse.filter_schemes import FilterSchemes
 from Divination import parameters
+
+ANALYSIS_DATE = '21-04-2020'
+ANALYSIS_DAYS = 100
 
 
 class CAGRPerformance:
@@ -14,35 +18,23 @@ class CAGRPerformance:
             os.makedirs(parameters.ANALYSIS_PATH)
         self.cagr_for_schemes = {}
         self.cagrs = []
-        self.analysis_file_name = parameters.ANALYSIS_DATE + ":" + str(parameters.ANALYSIS_DAYS) + "Days" + ".csv"
+        self.analysis_file_name = ANALYSIS_DATE + ":" + str(ANALYSIS_DAYS) + "Days" + ".csv"
         self.fund_type = fund_type
 
     def cagr_for_funds_of_type(self):
-        fund_type_lower = self.fund_type.lower()
-        if fund_type_lower == 'equity':
-            fund_key_words = parameters.EQUITY_KEY_WORDS
-        elif fund_type_lower == 'elss':
-            fund_key_words = parameters.ELSS_KEY_WORDS
-        elif fund_type_lower == 'debt':
-            fund_key_words = parameters.DEBT_KEY_WORDS
-        elif fund_type_lower == 'hybrid':
-            fund_key_words = parameters.HYBRID_KEY_WORDS
-        else:
-            print("Choose a valid fund type")
-            return
-
         self.analysis_file_name = self.fund_type + ":" + self.analysis_file_name
-        filtered_schemes = FilterSchemes(fund_key_words).filter_schemes_for_keywords()
+        key_words = fund_type_to_key_words(self.fund_type)
+        filtered_schemes = FilterSchemes().filter_schemes_for_keywords(key_words, ANALYSIS_DATE, ANALYSIS_DAYS)
         for scheme in filtered_schemes:
-            with open(os.path.join(parameters.SCHEME_DATA_PATH, str(scheme['scheme_code']) + ".json")) as scheme_file:
-                scheme_data = json.load(scheme_file)
+            with open(os.path.join(parameters.RAW_DATA_PATH, str(scheme['scheme_code']) + ".json")) as raw_data_file:
+                scheme_data = json.load(raw_data_file)
                 start = scheme_data['data'][scheme['startIndex']]
                 end = scheme_data['data'][scheme['endIndex']]
                 growth_rate = cagr(start, end)
 
                 self.cagr_for_schemes[scheme['scheme_name']] = growth_rate
                 self.cagrs.append(growth_rate)
-            scheme_file.close()
+            raw_data_file.close()
 
         self.write_funds_performance_to_file()
 

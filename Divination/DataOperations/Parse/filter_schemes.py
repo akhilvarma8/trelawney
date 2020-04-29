@@ -5,13 +5,12 @@ from Divination import parameters
 
 class FilterSchemes:
 
-    def __init__(self, fund_type_key_words: dict):
-        self.data_path = parameters.SCHEME_DATA_PATH
+    def __init__(self):
+        self.data_path = parameters.RAW_DATA_PATH
         self.schemes_file_path = parameters.ABSOLUTE_PATH + parameters.LATEST_DATA_FOLDER
         self.filtered_schemes = []
-        self.fund_type_key_words = fund_type_key_words
 
-    def filter_schemes_for_keywords(self):
+    def filter_schemes_for_keywords(self, fund_type_key_words: dict, analysis_date: str, analysis_days: int):
         with open(os.path.join(self.schemes_file_path, "schemes.json")) as schemes_file:
             schemes_data = json.load(schemes_file)
             for scheme in schemes_data:
@@ -20,23 +19,22 @@ class FilterSchemes:
                     active = False
                     number_of_days_to_analysis_date = 0
                     for daily_nav in scheme_data['data']:
-                        if daily_nav['date'] == parameters.ANALYSIS_DATE:
+                        if daily_nav['date'] == analysis_date:
                             active = True
                             break
                         number_of_days_to_analysis_date += 1
 
                     if active:
-                        if len(scheme_data['data']) > parameters.ANALYSIS_DAYS + number_of_days_to_analysis_date:
+                        if len(scheme_data['data']) > analysis_days + number_of_days_to_analysis_date:
                             scheme['endIndex'] = number_of_days_to_analysis_date
-                            scheme['startIndex'] = number_of_days_to_analysis_date + parameters.ANALYSIS_DAYS
+                            scheme['startIndex'] = number_of_days_to_analysis_date + analysis_days
                             if self.filter_for_direct_growth(scheme_data['meta']):
-                                if self.filter_for_fund_type(scheme_data['meta'], self.fund_type_key_words):
+                                if self.filter_for_fund_type(scheme_data['meta'], fund_type_key_words):
                                     self.filtered_schemes.append(scheme)
 
                 scheme_file.close()
         schemes_file.close()
 
-        print(filter, len(self.filtered_schemes))
         return self.filtered_schemes
 
     @staticmethod
