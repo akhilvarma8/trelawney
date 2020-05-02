@@ -20,7 +20,8 @@ class CAGRAVCorrelation:
                                                                             ANALYSIS_DATE,
                                                                             MINIMUM_HISTORICAL_DAYS)
         self.multiple_time_length_cagrs = self.multiple_time_length_cagr_for_schemes()
-        print(self.multiple_time_length_cagrs)
+        self.multiple_time_length_cagravs = self.convert_multiple_time_length_cagrs_to_cagravs()
+        self.calculate_correlation_between_projection_and_history()
 
     def multiple_time_length_cagr_for_schemes(self):
         cagrs_for_all_schemes = []
@@ -33,6 +34,18 @@ class CAGRAVCorrelation:
                     cagrs.append(cagr(data[i], data[PROJECTION_DAYS - 1]))
                 cagrs_for_all_schemes.append(cagrs)
         return numpy.array(cagrs_for_all_schemes)
+
+    def convert_multiple_time_length_cagrs_to_cagravs(self):
+        mean_array = numpy.around(numpy.mean(self.multiple_time_length_cagrs, axis=0), 2)
+        return self.multiple_time_length_cagrs - mean_array
+
+    def calculate_correlation_between_projection_and_history(self):
+        projection = self.multiple_time_length_cagrs[:, 0]
+        correlations = {}
+        for i in range(1, MINIMUM_HISTORICAL_DAYS - PROJECTION_DAYS + 1):
+            correlations[str(i)] = numpy.corrcoef(projection, self.multiple_time_length_cagravs[:, i])[0, 1]
+
+        print(sorted(correlations.items(), key=lambda x: x[1], reverse=True))
 
 
 def main():
