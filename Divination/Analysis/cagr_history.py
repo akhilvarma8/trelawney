@@ -11,7 +11,7 @@ ANALYSIS_DATE = '21-04-2020'
 ANALYSIS_DAYS = 100
 
 
-class CAGRPerformance:
+class CAGRHistory:
 
     def __init__(self, fund_type: str):
         if not os.path.exists(parameters.ANALYSIS_PATH):
@@ -36,9 +36,9 @@ class CAGRPerformance:
                 self.cagrs.append(growth_rate)
             raw_data_file.close()
 
-        self.write_funds_performance_to_file()
+        self.write_funds_history_to_file()
 
-    def write_funds_performance_to_file(self):
+    def write_funds_history_to_file(self):
         sorted_funds = sorted(self.cagr_for_schemes.items(), key=lambda x: x[1], reverse=True)
         print(len(sorted_funds))
         funds_mean = mean(self.cagrs)
@@ -52,7 +52,7 @@ class CAGRPerformance:
 
 
 def main():
-    CAGRPerformance("ELSS").cagr_for_funds_of_type()
+    CAGRHistory("ELSS").cagr_for_funds_of_type()
 
 
 if __name__ == '__main__':
