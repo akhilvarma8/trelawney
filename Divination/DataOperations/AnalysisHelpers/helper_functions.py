@@ -15,10 +15,10 @@ def fund_type_to_key_words(fund_type: str) -> dict:
         print("Choose a valid fund type")
 
 
-def return_on_investment(investment_amount: int, start: dict, end: dict) -> int:
+def redeemed_amount_for(investment_amount: float, start: dict, end: dict) -> float:
     if float(start['nav']) == 0.0:
         return 0
 
     units_purchased = investment_amount / float(start['nav'])
     redeemed_amount = units_purchased * float(end['nav'])
-    return round(redeemed_amount)
+    return redeemed_amount

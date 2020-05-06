@@ -8,7 +8,7 @@ from Divination.DataOperations.Parse.filter_schemes import FilterSchemes
 from Divination import parameters
 
 ANALYSIS_DATE = '21-04-2020'
-ANALYSIS_DAYS = 100
+ANALYSIS_DAYS = 1000
 
 
 class CAGRHistory:
@@ -40,7 +40,6 @@ class CAGRHistory:
 
     def write_funds_history_to_file(self):
         sorted_funds = sorted(self.cagr_for_schemes.items(), key=lambda x: x[1], reverse=True)
-        print(len(sorted_funds))
         funds_mean = mean(self.cagrs)
 
         with open(os.path.join(parameters.ANALYSIS_PATH, self.analysis_file_name), 'w', newline='') as file:
