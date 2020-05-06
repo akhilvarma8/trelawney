@@ -8,7 +8,7 @@ from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr
 
 ANALYSIS_DATE = '21-04-2020'
 ANALYSIS_DAYS = 200
-MINIMUM_HISTORICAL_DAYS = 1000
+MINIMUM_HISTORICAL_DAYS = 1500
 PROJECTION_DAYS = 200
 
 
@@ -41,7 +41,6 @@ class CAGRAVCorrelation:
         for i in range(PROJECTION_DAYS, PROJECTION_DAYS + ANALYSIS_DAYS):
             multiple_time_length_cagravs = self.multiple_time_length_cagrav_for_schemes(i)
             projection = multiple_time_length_cagravs[:, 0]
-            #correlations.clear()
             for j in range(1, MINIMUM_HISTORICAL_DAYS - (PROJECTION_DAYS + ANALYSIS_DAYS) + 1):
                 if str(j) in correlations:
                     correlations[str(j)] = (correlations[str(j)] +
