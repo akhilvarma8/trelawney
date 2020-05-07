@@ -3,11 +3,7 @@ import json
 import os
 
 from Divination import parameters
-
-
-def convert_to_datetime_format(date: str) -> datetime.date:
-    split_values = date.split("-")
-    return datetime.date(int(split_values[2]), int(split_values[1]), int(split_values[0]))
+from Divination.DataOperations.helper_functions import convert_to_datetime_format
 
 
 def cagr(start: dict, end: dict) -> float:

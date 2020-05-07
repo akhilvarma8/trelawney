@@ -3,7 +3,7 @@ import os
 import csv
 from statistics import mean
 from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr
-from Divination.DataOperations.AnalysisHelpers.helper_functions import fund_type_to_key_words
+from Divination.DataOperations.helper_functions import fund_type_to_key_words
 from Divination.DataOperations.Parse.filter_schemes import FilterSchemes
 from Divination import parameters
 

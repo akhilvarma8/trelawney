@@ -3,7 +3,7 @@ import os
 
 from Divination import parameters
 from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagrs_for_schemes
-from Divination.DataOperations.AnalysisHelpers.helper_functions import fund_type_to_key_words, redeemed_amount_for
+from Divination.DataOperations.helper_functions import fund_type_to_key_words, redeemed_amount_for
 from Divination.DataOperations.Parse.filter_schemes import FilterSchemes
 
 
@@ -26,8 +26,6 @@ class InvestmentPerformance:
         start_index = self.filtered_schemes[0]['startIndex']
         end_index = self.filtered_schemes[0]['endIndex']
 
-        print(start_index, end_index)
-
         index = start_index - self.ANALYSIS_DAYS
         while index - self.ANALYSIS_DAYS > end_index:
             cagrs = cagrs_for_schemes(index + self.ANALYSIS_DAYS, index, self.filtered_schemes)
@@ -39,7 +37,6 @@ class InvestmentPerformance:
         sorted_funds = sorted(cagrs.items(), key=lambda x: x[1], reverse=True)
         self.calculate_redeemed_amount(index, end_index, sorted_funds)
         index = end_index
-        print(index, round(self.INVESTMENT_AMOUNT))
 
     def calculate_redeemed_amount(self, start_index: int, end_index: int, sorted_funds: []):
         redeemed_amount = 0
