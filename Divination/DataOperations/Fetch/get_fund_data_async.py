@@ -4,7 +4,6 @@ from Divination import parameters
 import json
 import os.path
 from datetime import datetime
-
 from Divination.DataOperations.helper_functions import add_non_working_day_nav
 
 
