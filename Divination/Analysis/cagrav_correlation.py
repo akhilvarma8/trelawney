@@ -5,9 +5,9 @@ from datetime import datetime
 from Divination import parameters
 from Divination.DataOperations.Parse.filter_schemes import FilterSchemes
 from Divination.DataOperations.helper_functions import fund_type_to_key_words
-from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr
+from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr_for_mutual_fund
 
-ANALYSIS_DATE = '30-12-2019'
+ANALYSIS_DATE = '07-05-2020'
 ANALYSIS_DAYS = 1000
 MINIMUM_HISTORICAL_DAYS = 2000
 PROJECTION_DAYS = 365
@@ -30,9 +30,9 @@ class CAGRAVCorrelation:
             with open(os.path.join(parameters.RAW_DATA_PATH, str(scheme['scheme_code']) + ".json")) as raw_data_file:
                 scheme_data = json.load(raw_data_file)
                 data = scheme_data['data']
-                cagrs = [cagr(data[projection_day - 1], data[projection_day - PROJECTION_DAYS])]
+                cagrs = [cagr_for_mutual_fund(data[projection_day - 1], data[projection_day - PROJECTION_DAYS])]
                 for i in range(projection_day, MINIMUM_HISTORICAL_DAYS):
-                    cagrs.append(cagr(data[i], data[projection_day - 1]))
+                    cagrs.append(cagr_for_mutual_fund(data[i], data[projection_day - 1]))
                 cagrs_for_all_schemes.append(cagrs)
         multiple_time_length_cagrs = numpy.array(cagrs_for_all_schemes)
         mean_array = numpy.around(numpy.mean(multiple_time_length_cagrs, axis=0), 2)

@@ -2,7 +2,7 @@ import json
 import os
 import csv
 from statistics import mean
-from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr
+from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr_for_mutual_fund
 from Divination.DataOperations.helper_functions import fund_type_to_key_words
 from Divination.DataOperations.Parse.filter_schemes import FilterSchemes
 from Divination import parameters
@@ -30,7 +30,7 @@ class CAGRHistory:
                 scheme_data = json.load(raw_data_file)
                 start = scheme_data['data'][scheme['startIndex']]
                 end = scheme_data['data'][scheme['endIndex']]
-                growth_rate = cagr(start, end)
+                growth_rate = cagr_for_mutual_fund(start, end)
 
                 self.cagr_for_schemes[scheme['scheme_name']] = growth_rate
                 self.cagrs.append(growth_rate)

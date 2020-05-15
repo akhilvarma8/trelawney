@@ -1,7 +1,7 @@
 import json
 import os
 from Divination import parameters
-from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagrs_for_schemes
+from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagrs_for_schemes, cagr_for_days
 from Divination.DataOperations.helper_functions import fund_type_to_key_words, redeemed_amount_for
 from Divination.DataOperations.Parse.filter_schemes import FilterSchemes
 
@@ -24,7 +24,6 @@ class InvestmentPerformance:
                                                                             investment_lifecycle_days)
         start_index = self.filtered_schemes[0]['startIndex']
         end_index = self.filtered_schemes[0]['endIndex']
-        print(start_index - investment_lifecycle_days, end_index)
 
         index = start_index - investment_lifecycle_days
         while index - investment_lifecycle_days > end_index:
@@ -38,7 +37,7 @@ class InvestmentPerformance:
         sorted_funds = sorted(cagrs.items(), key=lambda x: x[1], reverse=True)
         self.calculate_redeemed_amount(investment_amount, index, end_index, sorted_funds)
         index = end_index
-        print(investment_amount, index)
+        return investment_amount
 
     def calculate_redeemed_amount(self, investment_amount: int, start_index: int, end_index: int, sorted_funds: []):
         redeemed_amount = 0
@@ -65,14 +64,22 @@ class InvestmentPerformance:
                 redeemed_amount += redeemed_amount_for(investment_amount / len(self.filtered_schemes),
                                                        start, end)
 
-        print('Average Performance =', redeemed_amount)
+        return redeemed_amount
 
 
 def main():
     performance = InvestmentPerformance('Equity')
-    performance.return_on_investment(investment_amount=100000, final_redeemed_date='31-12-2019',
-                                     minimum_historical_days=2000, investment_lifecycle_days=165)
-    performance.average_return_on_investment(investment_amount=100000, investment_lifecycle_days=165)
+    investment_lifecycle_days = 163
+    end_value = performance.return_on_investment(investment_amount=100000, final_redeemed_date='31-12-2019',
+                                                 minimum_historical_days=2000,
+                                                 investment_lifecycle_days=investment_lifecycle_days)
+    average_value = performance.average_return_on_investment(investment_amount=100000,
+                                                             investment_lifecycle_days=investment_lifecycle_days)
+    active_cagr = cagr_for_days(100000, end_value, 2000)
+    passive_cagr = cagr_for_days(100000, average_value, 2000)
+
+    print(end_value, average_value)
+    print(active_cagr, passive_cagr)
 
 
 if __name__ == '__main__':

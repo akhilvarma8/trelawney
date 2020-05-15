@@ -6,7 +6,7 @@ from Divination import parameters
 from Divination.DataOperations.helper_functions import convert_to_datetime_format
 
 
-def cagr(start: dict, end: dict) -> float:
+def cagr_for_mutual_fund(start: dict, end: dict) -> float:
     """
     This function calculates and returns the CAGR (compound annual growth rate) for the time period.
 
@@ -25,6 +25,13 @@ def cagr(start: dict, end: dict) -> float:
 
     years = float((end_date - start_date).days) / 365
     growth_rate: float = (((end_value / start_value) ** (1 / years)) - 1) * 100
+
+    return round(growth_rate, 2)
+
+
+def cagr_for_days(start_amount: float, end_amount: float, days: int):
+    years = float(days) / 365
+    growth_rate: float = (((end_amount / start_amount) ** (1 / years)) - 1) * 100
 
     return round(growth_rate, 2)
 
@@ -48,7 +55,7 @@ def cagrs_for_schemes(start_index: int, end_index: int, schemes: list) -> dict:
             scheme_data = json.load(raw_data_file)
             start = scheme_data['data'][start_index]
             end = scheme_data['data'][end_index]
-            cagrs[str(scheme['scheme_code'])] = cagr(start, end)
+            cagrs[str(scheme['scheme_code'])] = cagr_for_mutual_fund(start, end)
         raw_data_file.close()
 
     return cagrs
