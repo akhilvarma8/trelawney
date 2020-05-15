@@ -1,15 +1,16 @@
 import json
 import os
 import numpy
+from datetime import datetime
 from Divination import parameters
 from Divination.DataOperations.Parse.filter_schemes import FilterSchemes
 from Divination.DataOperations.helper_functions import fund_type_to_key_words
 from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr
 
-ANALYSIS_DATE = '21-04-2020'
-ANALYSIS_DAYS = 200
-MINIMUM_HISTORICAL_DAYS = 1500
-PROJECTION_DAYS = 200
+ANALYSIS_DATE = '30-12-2019'
+ANALYSIS_DAYS = 1000
+MINIMUM_HISTORICAL_DAYS = 2000
+PROJECTION_DAYS = 365
 
 
 class CAGRAVCorrelation:
@@ -23,6 +24,7 @@ class CAGRAVCorrelation:
         print(len(self.filtered_schemes))
 
     def multiple_time_length_cagrav_for_schemes(self, projection_day: int):
+        print(projection_day, datetime.now())
         cagrs_for_all_schemes = []
         for scheme in self.filtered_schemes:
             with open(os.path.join(parameters.RAW_DATA_PATH, str(scheme['scheme_code']) + ".json")) as raw_data_file:
@@ -51,8 +53,13 @@ class CAGRAVCorrelation:
 
 
 def main():
-    correlation = CAGRAVCorrelation('ELSS')
+    start = datetime.now()
+    print(start)
+    correlation = CAGRAVCorrelation('Equity')
     correlation.calculate_correlation_between_projection_and_history()
+    end = datetime.now()
+    print(end)
+    print(end - start)
 
 
 if __name__ == '__main__':
