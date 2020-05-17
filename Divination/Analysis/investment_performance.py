@@ -15,19 +15,19 @@ class InvestmentPerformance:
         self.key_words = fund_type_to_key_words(self.fund_type)
 
     def return_on_investment(self, investment_amount: float, final_redeemed_date: str,
-                             minimum_historical_days: int, investment_lifecycle_days: int,
-                             fund_diversification=3):
+                             minimum_historical_days: int, investment_analysis_days: int,
+                             investment_lifecycle_days: int, fund_diversification=3):
         self.FUNDS_DIVERSIFICATION = fund_diversification
         self.filtered_schemes = FilterSchemes().filter_schemes_for_keywords(self.key_words,
                                                                             final_redeemed_date,
                                                                             minimum_historical_days +
-                                                                            investment_lifecycle_days)
+                                                                            investment_analysis_days)
         start_index = self.filtered_schemes[0]['startIndex']
         end_index = self.filtered_schemes[0]['endIndex']
 
-        index = start_index - investment_lifecycle_days
+        index = start_index - investment_analysis_days
         while index - investment_lifecycle_days > end_index:
-            cagrs = cagrs_for_schemes(index + investment_lifecycle_days, index, self.filtered_schemes)
+            cagrs = cagrs_for_schemes(index + investment_analysis_days, index, self.filtered_schemes)
             sorted_funds = sorted(cagrs.items(), key=lambda x: x[1], reverse=True)
             investment_amount = self.calculate_redeemed_amount(investment_amount, index,
                                                                index - investment_lifecycle_days, sorted_funds)
@@ -36,7 +36,6 @@ class InvestmentPerformance:
         cagrs = cagrs_for_schemes(index + investment_lifecycle_days, index, self.filtered_schemes)
         sorted_funds = sorted(cagrs.items(), key=lambda x: x[1], reverse=True)
         self.calculate_redeemed_amount(investment_amount, index, end_index, sorted_funds)
-        index = end_index
         return investment_amount
 
     def calculate_redeemed_amount(self, investment_amount: int, start_index: int, end_index: int, sorted_funds: []):
@@ -50,7 +49,7 @@ class InvestmentPerformance:
 
         return redeemed_amount
 
-    def average_return_on_investment(self, investment_amount: int, investment_lifecycle_days: int):
+    def average_return_on_investment(self, investment_amount: int, investment_analysis_days: int):
         if len(self.filtered_schemes) == 0:
             print("No Filtered Schemes")
             return
@@ -59,7 +58,7 @@ class InvestmentPerformance:
         for scheme in self.filtered_schemes:
             with open(os.path.join(parameters.RAW_DATA_PATH, str(scheme['scheme_code']) + ".json")) as raw_data_file:
                 scheme_data = json.load(raw_data_file)
-                start = scheme_data['data'][scheme['startIndex'] - investment_lifecycle_days]
+                start = scheme_data['data'][scheme['startIndex'] - investment_analysis_days]
                 end = scheme_data['data'][scheme['endIndex']]
                 redeemed_amount += redeemed_amount_for(investment_amount / len(self.filtered_schemes),
                                                        start, end)
@@ -68,13 +67,15 @@ class InvestmentPerformance:
 
 
 def main():
-    performance = InvestmentPerformance('Equity')
-    investment_lifecycle_days = 163
-    end_value = performance.return_on_investment(investment_amount=100000, final_redeemed_date='31-12-2019',
+    performance = InvestmentPerformance('ELSS')
+    investment_lifecycle_days = 365
+    investment_analysis_days = 81
+    end_value = performance.return_on_investment(investment_amount=100000, final_redeemed_date='07-05-2020',
                                                  minimum_historical_days=2000,
+                                                 investment_analysis_days=investment_analysis_days,
                                                  investment_lifecycle_days=investment_lifecycle_days)
     average_value = performance.average_return_on_investment(investment_amount=100000,
-                                                             investment_lifecycle_days=investment_lifecycle_days)
+                                                             investment_analysis_days=investment_analysis_days)
     active_cagr = cagr_for_days(100000, end_value, 2000)
     passive_cagr = cagr_for_days(100000, average_value, 2000)
 

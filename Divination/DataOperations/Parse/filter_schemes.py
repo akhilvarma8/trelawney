@@ -9,9 +9,21 @@ class FilterSchemes:
     def __init__(self):
         self.data_path = parameters.RAW_DATA_PATH
         self.schemes_file_path = parameters.ABSOLUTE_PATH + parameters.LATEST_DATA_FOLDER
-        self.filtered_schemes = []
 
     def filter_schemes_for_keywords(self, fund_type_key_words: dict, analysis_date: str, minimum_historical_days: int):
+        """
+        This method filters the funds for the following
+            - Key words in the scheme_category
+            - Only Direct and Growth Schemes
+            - Is active on analysis_date
+            - Contains at least minimum_historical_days history to and including the analysis_date.
+        :param fund_type_key_words: A dictionary for in and out type keywords.
+        :param analysis_date: The date for which the filter is anchored to.
+        :param minimum_historical_days: The number of days in the past including the analysis_date for which the fund
+        has to be active to be filtered.
+        :return: Returns a list of schemes that pass the filter parameters.
+        """
+        filtered_schemes = []
         with open(os.path.join(self.schemes_file_path, "schemes.json")) as schemes_file:
             schemes_data = json.load(schemes_file)
             for scheme in schemes_data:
@@ -20,23 +32,24 @@ class FilterSchemes:
                         with open(os.path.join(self.data_path, str(scheme['scheme_code']) + '.json')) as scheme_file:
                             scheme_data = json.load(scheme_file)
                             active = False
-                            number_of_days_to_analysis_date = 0
+                            index_of_analysis_date = 0
+                            # Replace this with BST.
                             for daily_nav in scheme_data['data']:
                                 if daily_nav['date'] == analysis_date:
                                     active = True
                                     break
-                                number_of_days_to_analysis_date += 1
+                                index_of_analysis_date += 1
 
                             if active:
-                                if len(scheme_data['data']) > minimum_historical_days + number_of_days_to_analysis_date:
-                                    scheme['endIndex'] = number_of_days_to_analysis_date
-                                    scheme['startIndex'] = number_of_days_to_analysis_date + minimum_historical_days
-                                    self.filtered_schemes.append(scheme)
+                                if len(scheme_data['data']) >= minimum_historical_days + index_of_analysis_date:
+                                    scheme['endIndex'] = index_of_analysis_date
+                                    scheme['startIndex'] = index_of_analysis_date + minimum_historical_days - 1
+                                    filtered_schemes.append(scheme)
 
                         scheme_file.close()
         schemes_file.close()
 
-        return self.filtered_schemes
+        return filtered_schemes
 
     @staticmethod
     def filter_for_direct_growth(scheme: dict) -> bool:
@@ -71,12 +84,10 @@ class FilterSchemes:
 
 def main():
     filtered = FilterSchemes()
-    filtered_schemes = filtered.filter_schemes_for_keywords(fund_type_to_key_words("equity"), '31-12-2019', 2000)
+    filtered_schemes = filtered.filter_schemes_for_keywords(fund_type_to_key_words("ELSS"), '07-05-2020', 2000)
     scheme_categories = []
     for scheme in filtered_schemes:
-        scheme_categories.append(scheme['scheme_category'])
-
-    print(set(scheme_categories))
+        print(scheme['scheme_name'], scheme['scheme_category'])
 
 
 if __name__ == '__main__':

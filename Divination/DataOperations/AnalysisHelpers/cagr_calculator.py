@@ -23,15 +23,29 @@ def cagr_for_mutual_fund(start: dict, end: dict) -> float:
     end_date = convert_to_datetime_format(end["date"])
     end_value = float(end["nav"])
 
+    if start_value == end_value:
+        return 0.00
+
     years = float((end_date - start_date).days) / 365
     growth_rate: float = (((end_value / start_value) ** (1 / years)) - 1) * 100
 
     return round(growth_rate, 2)
 
 
-def cagr_for_days(start_amount: float, end_amount: float, days: int):
+def cagr_for_days(start_value: float, end_value: float, days: int):
+    """
+    This function calculates and returns the CAGR (compound annual growth rate) for the time period in days.
+
+    :param start_value: The value at start.
+    :param end_value: The value at end.
+    :param days: The number of days between start and end.
+    :return: The CAGR (compound annual growth rate) for the time period.
+    """
+    if start_value == end_value or start_value == 0:
+        return 0.00
+
     years = float(days) / 365
-    growth_rate: float = (((end_amount / start_amount) ** (1 / years)) - 1) * 100
+    growth_rate: float = (((end_value / start_value) ** (1 / years)) - 1) * 100
 
     return round(growth_rate, 2)
 

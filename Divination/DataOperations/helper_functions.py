@@ -40,9 +40,9 @@ def fund_type_to_key_words(fund_type: str) -> dict:
     if fund_type_lower == 'equity':
         return {'in': ["Equity", "Index"], 'out': ['ELSS']}
     elif fund_type_lower == 'elss':
-        return {'in': ["Debt"], 'out': []}
-    elif fund_type_lower == 'debt':
         return {'in': ["ELSS"], 'out': []}
+    elif fund_type_lower == 'debt':
+        return {'in': ["Debt"], 'out': []}
     elif fund_type_lower == 'hybrid':
         return {'in': ["Hybrid"], 'out': []}
     else:
