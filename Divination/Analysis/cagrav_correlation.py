@@ -10,7 +10,7 @@ from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr_for_m
 
 ANALYSIS_DATE = '07-05-2020'
 MINIMUM_HISTORICAL_DAYS = 2000
-CORRELATION_ANALYSIS_DAYS = 100
+CORRELATION_ANALYSIS_DAYS = 365
 PROJECTION_DAYS = 365
 
 
