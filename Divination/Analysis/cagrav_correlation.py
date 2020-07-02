@@ -9,8 +9,8 @@ from Divination.DataOperations.helper_functions import fund_type_to_key_words
 from Divination.DataOperations.AnalysisHelpers.cagr_calculator import cagr_for_mutual_fund
 
 ANALYSIS_DATE = '07-05-2020'
-MINIMUM_HISTORICAL_DAYS = 2000
-CORRELATION_ANALYSIS_DAYS = 365
+MINIMUM_HISTORICAL_DAYS = 1000
+CORRELATION_ANALYSIS_DAYS = 100
 PROJECTION_DAYS = 365
 
 
